@@ -1,16 +1,20 @@
 package com.james.authentication2.utils.network
 
-import com.james.authentication2.model.LoginResponse
 import com.james.authentication2.model.RefreshTokenBody
 import com.james.authentication2.model.RefreshTokenResponse
+import com.james.authentication2.service.auth.AuthApiService
 import com.james.authentication2.utils.constant.NetworkConstant.BASE_URL
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
-import okhttp3.*
+import okhttp3.Authenticator
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.Route
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
 class AuthAuthenticator @Inject constructor(private val tokenManager: TokenManager) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -44,7 +48,7 @@ class AuthAuthenticator @Inject constructor(private val tokenManager: TokenManag
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
-        val service = retrofit.create(APIConsumer::class.java)
+        val service = retrofit.create(AuthApiService::class.java)
         return service.refreshToken(refreshToken)
     }
 

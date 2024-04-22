@@ -4,8 +4,9 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.james.authentication2.service.auth.AuthApiService
+import com.james.authentication2.service.home.HomeApiService
 import com.james.authentication2.utils.constant.NetworkConstant.BASE_URL
-import com.james.authentication2.utils.network.APIConsumer
 import com.james.authentication2.utils.network.AuthAuthenticator
 import com.james.authentication2.utils.network.AuthInterceptor
 import com.james.authentication2.utils.network.TokenManager
@@ -65,16 +66,16 @@ class SingletonModule {
 
     @Singleton
     @Provides
-    fun provideAuthAPIService(retrofit: Retrofit.Builder): APIConsumer =
+    fun provideAuthAPIService(retrofit: Retrofit.Builder): AuthApiService =
         retrofit
             .build()
-            .create(APIConsumer::class.java)
+            .create(AuthApiService::class.java)
 
     @Singleton
     @Provides
-    fun provideMainAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): APIConsumer =
+    fun provideMainAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): HomeApiService =
         retrofit
             .client(okHttpClient)
             .build()
-            .create(APIConsumer::class.java)
+            .create(HomeApiService::class.java)
 }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import retrofit2.Response
 
 object NetworkConstant {
-    const val BASE_URL = "https://common-api-v1.vercel.app"
+    const val BASE_URL = "https://common-api-v1.vercel.app/"
 }
 
 fun<T> apiRequestFlow(call: suspend () -> Response<T>): Flow<ApiResponse<T>> = flow {
