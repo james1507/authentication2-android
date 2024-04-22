@@ -9,7 +9,7 @@ import com.james.authentication2.service.home.HomeApiService
 import com.james.authentication2.utils.constant.NetworkConstant.BASE_URL
 import com.james.authentication2.utils.network.AuthAuthenticator
 import com.james.authentication2.utils.network.AuthInterceptor
-import com.james.authentication2.utils.network.TokenManager
+import com.james.authentication2.utils.network.AuthManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,7 +29,7 @@ class SingletonModule {
 
     @Singleton
     @Provides
-    fun provideTokenManager(@ApplicationContext context: Context): TokenManager = TokenManager(context)
+    fun provideTokenManager(@ApplicationContext context: Context): AuthManager = AuthManager(context)
 
     @Singleton
     @Provides
@@ -49,12 +49,12 @@ class SingletonModule {
 
     @Singleton
     @Provides
-    fun provideAuthInterceptor(tokenManager: TokenManager): AuthInterceptor =
+    fun provideAuthInterceptor(tokenManager: AuthManager): AuthInterceptor =
         AuthInterceptor(tokenManager)
 
     @Singleton
     @Provides
-    fun provideAuthAuthenticator(tokenManager: TokenManager): AuthAuthenticator =
+    fun provideAuthAuthenticator(tokenManager: AuthManager): AuthAuthenticator =
         AuthAuthenticator(tokenManager)
 
     @Singleton

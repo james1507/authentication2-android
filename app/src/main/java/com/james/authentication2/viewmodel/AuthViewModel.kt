@@ -1,25 +1,52 @@
 package com.james.authentication2.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import com.james.authentication2.helpers.ApiResponse
-import com.james.authentication2.model.LoginBody
-import com.james.authentication2.model.LoginResponse
-import com.james.authentication2.repository.AuthRepository
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.james.authentication2.utils.network.AuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
-): BaseViewModel() {
+    private val authManager: AuthManager,
+): ViewModel() {
 
-    private val _loginResponse = MutableLiveData<ApiResponse<LoginResponse>>()
-    val loginResponse = _loginResponse
+    val token = MutableLiveData<String?>()
+    val userId = MutableLiveData<String?>()
 
-    fun login(loginBody: LoginBody, coroutinesErrorHandler: CoroutinesErrorHandler) = baseRequest(
-        _loginResponse,
-        coroutinesErrorHandler
-    ) {
-        authRepository.login(loginBody)
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            authManager.getToken().collect {
+                withContext(Dispatchers.Main) {
+                    token.value = it
+                }
+            }
+
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            authManager.getUserId().collect {
+                withContext(Dispatchers.Main) {
+                    userId.value = it
+                }
+            }
+        }
+    }
+
+    fun saveAuth(token: String, userId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            authManager.saveToken(token)
+            authManager.saveUserId(userId)
+        }
+    }
+
+    fun deleteAuth() {
+        viewModelScope.launch(Dispatchers.IO) {
+            authManager.deleteToken()
+            authManager.deleteUserId()
+        }
     }
 }

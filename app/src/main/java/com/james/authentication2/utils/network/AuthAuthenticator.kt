@@ -16,7 +16,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
-class AuthAuthenticator @Inject constructor(private val tokenManager: TokenManager) : Authenticator {
+class AuthAuthenticator @Inject constructor(private val tokenManager: AuthManager) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         val token = runBlocking {
             tokenManager.getToken().first()

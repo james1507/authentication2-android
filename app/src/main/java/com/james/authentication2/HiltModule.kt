@@ -1,7 +1,7 @@
 package com.james.authentication2
 
 import com.james.authentication2.repository.AuthRepository
-import com.james.authentication2.repository.MainRepository
+import com.james.authentication2.repository.HomeRepository
 import com.james.authentication2.service.auth.AuthApiService
 import com.james.authentication2.service.home.HomeApiService
 import dagger.Module
@@ -16,5 +16,5 @@ class HiltModule {
     fun provideAuthRepository(apiConsumer: AuthApiService) = AuthRepository(apiConsumer)
 
     @Provides
-    fun provideMainRepository(apiConsumer: HomeApiService) = MainRepository(apiConsumer)
+    fun provideMainRepository(apiConsumer: HomeApiService) = HomeRepository(apiConsumer)
 }

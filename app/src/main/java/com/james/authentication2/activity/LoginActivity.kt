@@ -10,14 +10,14 @@ import com.james.authentication2.helpers.ApiResponse
 import com.james.authentication2.model.LoginBody
 import com.james.authentication2.viewmodel.AuthViewModel
 import com.james.authentication2.viewmodel.CoroutinesErrorHandler
-import com.james.authentication2.viewmodel.TokenViewModel
+import com.james.authentication2.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityLoginBinding
-    private val viewModel: AuthViewModel by viewModels()
-    private val tokenViewModel: TokenViewModel by viewModels()
+    private val viewModel: LoginViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +26,7 @@ class LoginActivity : AppCompatActivity() {
         mBinding = ActivityLoginBinding.inflate(LayoutInflater.from(this))
         setContentView(mBinding.root)
 
-        tokenViewModel.token.observe(this) { token ->
+        authViewModel.token.observe(this) { token ->
             if (token != null) {
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
@@ -40,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
                 is ApiResponse.Failure -> status.text = it.msg
                 ApiResponse.Loading -> status.text = "Loading"
                 is ApiResponse.Success -> {
-                    tokenViewModel.saveToken(it.data.results.token)
+                    authViewModel.saveAuth(it.data.results.token, it.data.results.id)
                 }
             }
         }

@@ -4,14 +4,15 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.james.authentication2.utils.constant.LocalStorageConstant.TOKEN
+import com.james.authentication2.utils.constant.LocalStorageConstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class TokenManager(private val context: Context) {
+class AuthManager(private val context: Context) {
     companion object {
-        private val TOKEN_KEY = stringPreferencesKey(TOKEN)
         private val Context.dataStore by preferencesDataStore("jwt_token")
+        private val TOKEN_KEY = stringPreferencesKey(LocalStorageConstant.TOKEN)
+        private val USER_ID = stringPreferencesKey(LocalStorageConstant.USER_ID)
     }
 
     fun getToken(): Flow<String?> {
@@ -30,6 +31,24 @@ class TokenManager(private val context: Context) {
     suspend fun deleteToken() {
         context.dataStore.edit { preferences ->
             preferences.remove(TOKEN_KEY)
+        }
+    }
+
+    fun getUserId(): Flow<String?> {
+        return context.dataStore.data.map { preferences ->
+            preferences[USER_ID]
+        }
+    }
+
+    suspend fun saveUserId(userId: String) {
+        context.dataStore.edit { preferences ->
+            preferences[USER_ID] = userId
+        }
+    }
+
+    suspend fun deleteUserId() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(USER_ID)
         }
     }
 }
